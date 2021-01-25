@@ -37,7 +37,7 @@ export default class Login extends React.Component {
         validateCredentials: true
       });
       if (username === "") {
-        this.setState({ emptyUsername: false });
+        this.setState({ emptyUsername: true });
         return;
       }
       if (password === "") {
