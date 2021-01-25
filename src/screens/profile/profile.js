@@ -36,7 +36,7 @@ export default class Profile extends React.Component {
       return;
     }
     fetch(
-      `https://api.instagram.com/v1/users/self/?access_token=${accessToken}`
+      `https://graph.instagram.com/me/media?fields=id,caption&access_token=${accessToken}`
     )
       .then(results => {
         return results.json();
@@ -53,7 +53,7 @@ export default class Profile extends React.Component {
         }
       });
     fetch(
-      `https://api.instagram.com/v1/users/self/media/recent?access_token=${accessToken}`
+      `https://graph.instagram.com/17879978042082604?fields=id,media_type,media_url,username,timestamp&access_token=${accessToken}`
     )
       .then(results => {
         return results.json();
