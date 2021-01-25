@@ -29,7 +29,6 @@ export default class Header extends React.Component {
   };
   render() {
     const { homepageHeader, url, goToHome } = this.props;
-    const { showDropdown } = this.state;
     return (
       <React.Fragment>
         {homepageHeader ? (
@@ -61,17 +60,6 @@ export default class Header extends React.Component {
               >
                 <img src={url} className="profile-pic" alt="pic" />
               </IconButton>
-              {showDropdown ? (
-                <div className="dropdown">
-                  <p className="option account" onClick={this.goToProfile}>
-                    My Account
-                  </p>
-                  <hr></hr>
-                  <p className="option logout" onClick={this.logout}>
-                    Logout
-                  </p>
-                </div>
-              ) : null}
             </div>
           </div>
         ) : (
