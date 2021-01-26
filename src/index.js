@@ -1,15 +1,9 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "./index.css";
-
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import Login from "./screens/login/Login";
-import Home from "./screens/home/Home";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
+import Controller from './common/Controller';
+import './index.css';
 
 ReactDOM.render(
-  <Router>
-    <Route exact path="/" component={Login} />
-    <Route exact path="/home" component={Home} />
-  </Router>,
-  document.getElementById("root")
+    <BrowserRouter><Controller /></BrowserRouter>, document.getElementById('root')
 );

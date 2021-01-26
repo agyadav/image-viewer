@@ -1,101 +1,86 @@
-import * as React from "react";
-import {
-  Card,
-  FormControl,
-  Input,
-  InputLabel,
-  Button
-} from "@material-ui/core";
-import Header from "../../common/Header";
-import "./Login.css";
+import React, { Component } from 'react';
+import { Card, CardActions, CardContent, Typography, Button, FormControl, FormHelperText, Input, InputLabel } from '@material-ui/core';
+import PageWithHeader from '../../common/header/PageWithHeader';
+import Config from '../../common/config';
+import './Login.css';
 
-export default class Login extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      username: "",
-      password: "",
-      validateCredentials: true,
-      emptyUsername: false,
-      emptyPassword: false
-    };
-  }
-  handleChange(e, type) {
-    const value = e.target.value;
-    const nextState = {};
-    nextState[type] = value;
-    this.setState(nextState);
-  }
-  handleClick = () => {
-    const user = "user";
-    const pwd = "user";
-    const { username, password } = this.state;
-    if (username !== "" || password !== "") {
-      this.setState({
-        emptyUsername: false,
-        emptyPassword: false,
-        validateCredentials: true
-      });
-      if (username === "") {
-        this.setState({ emptyUsername: true });
-        return;
-      }
-      if (password === "") {
-        this.setState({ emptyPassword: true });
-        return;
-      }
-    } else {
-      this.setState({ emptyUsername: true, emptyPassword: true });
-      return;
+export default class Login extends Component {
+    constructor() {
+        super();
+        this.state = {
+            usernameVal: "",
+            passwordVal: "",
+            usernameRequiredText: "hide",
+            passwordRequiredText: "hide",
+            incorrectLoginInfoText: "hide"
+        }
+
+        /*****************************************************************************
+         * Username, Password, Access Token & Mocking can be setup or enabled in
+         *  ../../common/Config.js
+         *****************************************************************************/
     }
-    if (username === user && password === pwd) {
-      this.setState({ validateCredentials: true });
-      sessionStorage.setItem(
-        "accessToken",
-        "8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784"
-      );
-      window.location = "/home";
-    } else {
-      this.setState({ validateCredentials: false });
+
+    getUsernameOnChange = (e) => this.setState({ usernameVal: e.target.value, usernameRequiredText: "hide" });
+    getPasswordOnChange = (e) => this.setState({ passwordVal: e.target.value, passwordRequiredText: "hide" });
+    
+    //Verify Input Credentials & log the user in if the supplied credentials are OK
+    loginUserOnBtnClick = (e) => {
+		
+		this.state.usernameVal === "" ? this.setState({ usernameRequiredText: "show" }) : this.setState({ usernameRequiredText: "hide" });
+        this.state.passwordVal === "" ? this.setState({ passwordRequiredText: "show" }) : this.setState({ passwordRequiredText: "hide" });
+		
+		document.getElementById("ip-uname").focus();
+        if (this.state.usernameVal === Config.login.username && this.state.passwordVal === Config.login.password) {
+            window.sessionStorage.setItem('access-token', Config.auth["access-token"]);
+			this.props.history.push('/home/');
+        }
+        else if (this.state.usernameVal !== "" && this.state.passwordVal !== "") {
+            //document.getElementById("errormsg").innerHTML = "Incorrect username and/or password";
+			this.setState({ incorrectLoginInfoText: "show" })
+        }
+
+
+        if (this.state.usernameVal === "") {
+            document.getElementById("ip-uname").focus();
+
+        }
+        else if (this.state.passwordVal === "") {
+            document.getElementById("ip-passwd").focus();
+
+        }
+        
+      }
+
+   
+    render() {
+        return (
+            <PageWithHeader title="Image Viewer">
+                <Card className="login-card" >
+                    <CardContent>
+                        <FormControl margin="normal" size="medium" variant="standard">
+                            <Typography className="login-title" variant="h5" component="h5" color="textPrimary"
+                            >LOGIN</Typography>
+                        </FormControl>
+                        <FormControl fullWidth required margin="normal" size="medium" variant="standard">
+                            <InputLabel htmlFor="ip-uname">Username</InputLabel>
+                            <Input id="ip-uname" type="text" onChange={this.getUsernameOnChange} />
+                            <FormHelperText error className={this.state.usernameRequiredText}>required</FormHelperText>
+                        </FormControl>
+                        <FormControl fullWidth required margin="normal" size="medium" variant="standard">
+                            <InputLabel htmlFor="ip-passwd">Password</InputLabel>
+                            <Input id="ip-passwd" type="password" onChange={this.getPasswordOnChange} />
+                            <FormHelperText error className={this.state.passwordRequiredText}>required</FormHelperText>
+                        </FormControl>
+                        <FormHelperText error id="errormsg" className={this.state.incorrectLoginInfoText}>Incorrect username and/or password</FormHelperText>
+                    </CardContent>
+                    <CardActions>
+                        <FormControl margin="normal" size="medium" variant="standard">
+                            <Button variant="contained" color="primary" id="btn-login" onClick={this.loginUserOnBtnClick}>LOGIN</Button>
+                        </FormControl>
+                    </CardActions>
+                </Card>
+            </PageWithHeader>
+        );
     }
-  };
-  render() {
-    const { validateCredentials, emptyUsername, emptyPassword } = this.state;
-    return (
-      <div className="login-wrapper">
-        <Header />
-        <Card className="login-card">
-          <h3 className="login-heading">LOGIN</h3>
-          <FormControl fullWidth={true} margin="normal">
-            <InputLabel htmlFor="username">Username *</InputLabel>
-            <Input
-              id="username"
-              onChange={e => this.handleChange(e, "username")}
-            />
-            {emptyUsername ? <span className="error">required</span> : null}
-          </FormControl>
-          <FormControl fullWidth={true} margin="normal">
-            <InputLabel htmlFor="password">Password *</InputLabel>
-            <Input
-              id="password"
-              type="password"
-              onChange={e => this.handleChange(e, "password")}
-            />
-            {emptyPassword ? <span className="error">required</span> : null}
-            {!validateCredentials ? (
-              <span className="error">Incorrect username and/or password</span>
-            ) : null}
-          </FormControl>
-          <Button
-            variant="contained"
-            color="primary"
-            className="login-btn m1"
-            onClick={this.handleClick}
-          >
-            LOGIN
-          </Button>
-        </Card>
-      </div>
-    );
-  }
 }
